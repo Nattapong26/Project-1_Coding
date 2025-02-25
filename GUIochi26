@@ -1,1 +1,77 @@
+import math
+import tkinter as tk
+from tkinter import messagebox
+
+def pollution_concentration(Q, sigma_y, sigma_z, u, H, x, y, z):
+    try:
+        term1 = Q / (2 * math.pi * sigma_y * sigma_z * u)
+        term2 = math.exp(-y**2 / (2 * sigma_y**2))
+        term3 = math.exp(-(z - H)**2 / (2 * sigma_z**2)) + math.exp(-(z + H)**2 / (2 * sigma_z**2))
+        return term1 * term2 * term3
+    except ZeroDivisionError:
+        return None
+
+def calculate():
+    try:
+        Q = float(entry_Q.get())
+        sigma_y = float(entry_sigma_y.get())
+        sigma_z = float(entry_sigma_z.get())
+        u = float(entry_u.get())
+        H = float(entry_H.get())
+        x = float(entry_x.get())
+        y = float(entry_y.get())
+        z = float(entry_z.get())
+        
+        if u <= 0 or sigma_y <= 0 or sigma_z <= 0:
+            messagebox.showerror("Error", "ค่าความเร็วลม และค่าการกระจายต้องมากกว่า 0")
+            return
+        
+        C = pollution_concentration(Q, sigma_y, sigma_z, u, H, x, y, z)
+        if C is None:
+            messagebox.showerror("Error", "เกิดข้อผิดพลาดในการคำนวณ")
+        else:
+            result_label.config(text=f"ความเข้มข้นของมลพิษ: {C:.4f} g/m³")
+    except ValueError:
+        messagebox.showerror("Error", "กรุณากรอกค่าตัวเลขที่ถูกต้อง")
+
+# สร้างหน้าต่างหลัก
+root = tk.Tk()
+root.title("โปรแกรมคำนวณความเข้มข้นของมลพิษในอากาศ")
+root.geometry("400x550")
+root.configure(bg="#DFF6FF")
+
+# คำอธิบายโปรแกรม
+description_label = tk.Label(root, text="กรุณากรอกค่าต่อไปนี้เพื่อคำนวณความเข้มข้นของมลพิษ:", bg="#DFF6FF", font=("Arial", 10, "bold"))
+description_label.pack()
+
+# สร้าง Label และ Entry สำหรับรับค่าจากผู้ใช้
+labels = [
+    "Q (g/s) - ปริมาณการปล่อยสารมลพิษ", 
+    "sigma_y (m) - การกระจายในแนวขวาง", 
+    "sigma_z (m) - การกระจายในแนวดิ่ง", 
+    "u (m/s) - ความเร็วลม", 
+    "H (m) - ความสูงของแหล่งกำเนิด", 
+    "x (m) - ตำแหน่งตามแนวแกน x", 
+    "y (m) - ตำแหน่งตามแนวแกน y", 
+    "z (m) - ตำแหน่งตามแนวแกน z"
+]
+entries = []
+
+for i, label in enumerate(labels):
+    tk.Label(root, text=label, bg="#DFF6FF").pack()
+    entry = tk.Entry(root)
+    entry.pack()
+    entries.append(entry)
+
+entry_Q, entry_sigma_y, entry_sigma_z, entry_u, entry_H, entry_x, entry_y, entry_z = entries
+
+# ปุ่มคำนวณ
+calculate_button = tk.Button(root, text="คำนวณ", command=calculate, bg="#A5C9CA", fg="white")
+calculate_button.pack()
+
+# แสดงผลลัพธ์
+result_label = tk.Label(root, text="", font=("Arial", 12, "bold"), bg="#DFF6FF")
+result_label.pack()
+
+root.mainloop()
 
