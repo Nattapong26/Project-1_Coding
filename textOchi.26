@@ -1,1 +1,25 @@
+import math
 
+# ฟังก์ชันสำหรับคำนวณความเข้มข้นของมลพิษ
+def pollution_concentration(Q, sigma_y, sigma_z, u, H, x, y, z):
+    term1 = Q / (2 * math.pi * sigma_y * sigma_z * u)
+    term2 = math.exp(-y**2 / (2 * sigma_y**2))
+    term3 = math.exp(-(z - H)**2 / (2 * sigma_z**2)) + math.exp(-(z + H)**2 / (2 * sigma_z**2))
+
+    return term1 * term2 * term3
+
+# รับค่าจากผู้ใช้
+Q = float(input("ป้อนปริมาณการปล่อยมลพิษ (กรัม/วินาที): "))
+sigma_y = float(input("ป้อนพารามิเตอร์การกระจายในทิศทางขวาง (เมตร): "))
+sigma_z = float(input("ป้อนพารามิเตอร์การกระจายในทิศทางแนวดิ่ง (เมตร): "))
+u = float(input("ป้อนความเร็วลม (เมตร/วินาที): "))
+H = float(input("ป้อนความสูงของแหล่งปล่อยมลพิษ (เมตร): "))
+x = float(input("ป้อนระยะห่างจากแหล่งปล่อยมลพิษในทิศทาง x (เมตร): "))
+y = float(input("ป้อนระยะห่างจากแหล่งปล่อยมลพิษในทิศทาง y (เมตร): "))
+z = float(input("ป้อนระยะห่างจากแหล่งปล่อยมลพิษในทิศทาง z (เมตร): "))
+
+# คำนวณความเข้มข้นของมลพิษที่ตำแหน่ง (x, y, z)
+C = pollution_concentration(Q, sigma_y, sigma_z, u, H, x, y, z)
+
+# แสดงผลลัพธ์
+print(f"ความเข้มข้นของมลพิษที่ตำแหน่ง ({x}, {y}, {z}) คือ {C:.4f} กรัม/ลูกบาศก์เมตร")
